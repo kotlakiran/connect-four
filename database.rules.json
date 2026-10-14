@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "presence": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "sessions": {
+      "$gameId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "moves": {
+          "$moveId": {
+            ".validate": "newData.hasChildren(['edgeId', 'playerId', 'timestamp']) && newData.child('playerId').val() === auth.uid"
+          }
+        }
+      }
+    }
+  }
+}

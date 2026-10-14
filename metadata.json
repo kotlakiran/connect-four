@@ -1,0 +1,6 @@
+{
+  "name": "Connect Four",
+  "description": "A strategic Connect Four 4-in-a-row drop game with multiple board sizes, dice mode, smart AI opponents, pass & play, and online multiplayer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

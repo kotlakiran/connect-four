@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ConnectFour" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#17233C</item>
+        <item name="android:navigationBarColor">#17233C</item>
+    </style>
+</resources>

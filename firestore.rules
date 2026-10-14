@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isGameParticipant(gameData) {
+      return isAuthenticated() && (request.auth.uid in gameData.playerUids);
+    }
+
+    // Wallet fields are written only by Cloud Functions (Admin SDK bypasses these rules).
+    function walletFields() {
+      return ['coins', 'gems', 'jokers', 'collectibles'];
+    }
+
+    // Reward markers are server-owned; rewardMode is fixed at game creation.
+    function rewardLockedFields() {
+      return ['rewardMode', 'rewardsGranted', 'rewardsGrantedAt', 'rewardsGrantedMode', 'rewardsGrantedByUid'];
+    }
+
+    function rewardMarkerFields() {
+      return ['rewardsGranted', 'rewardsGrantedAt', 'rewardsGrantedMode', 'rewardsGrantedByUid'];
+    }
+
+    function validNewGameRewardMode(data) {
+      return !data.keys().hasAny(rewardMarkerFields())
+        && (!data.keys().hasAny(['rewardMode'])
+            || (data.rewardMode in ['RANKED', 'CASUAL', 'POWER_UP']
+                && !(data.rewardMode == 'POWER_UP' && data.get('gameMode', '') == 'QUICK_MATCH')));
+    }
+
+    function rewardFieldsUntouched() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(rewardLockedFields());
+    }
+
+    // Private User Profiles (contains private email, credentials)
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && !request.resource.data.keys().hasAny(walletFields());
+      allow update: if isOwner(userId) 
+        // Players cannot artificially modify their own level/score or achievements without validation
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'verifiedWinner']))
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(walletFields());
+      allow delete: if false;
+    }
+
+    // Safe Public Profiles (no email or sensitive data)
+    match /public_profiles/{userId} {
+      allow read: if true;
+      allow create: if isOwner(userId)
+        && !request.resource.data.keys().hasAny(['email', 'token', 'billing'])
+        && !request.resource.data.keys().hasAny(walletFields());
+      allow update: if isOwner(userId)
+        && !request.resource.data.keys().hasAny(['email', 'token', 'billing'])
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(walletFields());
+      allow delete: if false;
+    }
+
+    // Multiplayer Game Sessions
+    match /games/{gameId} {
+      allow read: if isAuthenticated();
+      
+      // Creating game
+      allow create: if isAuthenticated() 
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.status in ['WAITING', 'MATCHED']
+        && validNewGameRewardMode(request.resource.data);
+
+      // Updating game state
+      allow update: if isAuthenticated() && rewardFieldsUntouched() && (
+        // Joining open lobby
+        (resource.data.status == 'WAITING' && request.resource.data.status == 'MATCHED') ||
+        // Active gameplay move: must be participant, winner cannot be unilaterally set by non-finished board
+        (isGameParticipant(resource.data) && (
+          // Version must increment monotonically
+          request.resource.data.version == resource.data.version + 1
+        ))
+      );
+
+      // Subcollection: Players in game
+      match /players/{playerId} {
+        allow read: if isAuthenticated();
+        allow create, update: if isAuthenticated() && (
+          request.auth.uid == playerId ||
+          request.auth.uid in get(/databases/$(database)/documents/games/$(gameId)).data.playerUids
+        );
+      }
+
+      // Subcollection: Game Events
+      match /events/{eventId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && request.resource.data.playerId == request.auth.uid;
+      }
+    }
+
+    // Matchmaking Lobbies
+    match /lobbies/{lobbyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.playerUid == request.auth.uid;
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && (resource.data.playerUid == request.auth.uid || resource.data.hostUid == request.auth.uid);
+    }
+
+    // Global & Periodic Leaderboards (read-only for clients, updated by trusted functions)
+    match /leaderboards/{timeframe} {
+      allow read: if true;
+      allow write: if false; // Only Cloud Functions / Admin SDK
+    }
+    match /leaderboard_daily/{entryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /leaderboard_weekly/{entryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /leaderboard_monthly/{entryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Friends and Social
+    match /friends/{userId}/user_friends/{friendId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Match Invitations
+    match /invitations/{inviteId} {
+      allow read: if isAuthenticated() && (resource.data.targetUid == request.auth.uid || resource.data.hostUid == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.hostUid == request.auth.uid;
+      allow update: if isAuthenticated() && (resource.data.targetUid == request.auth.uid || resource.data.hostUid == request.auth.uid);
+    }
+  }
+}

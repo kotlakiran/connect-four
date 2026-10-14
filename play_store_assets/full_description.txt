@@ -1,0 +1,24 @@
+🎲 WELCOME TO CONNECT FOUR - THE ULTIMATE 4-IN-A-ROW STRATEGY EXPERIENCE! 🎲
+
+Experience the timeless classic 4-in-a-row strategy re-imagined for modern mobile devices! Connect Four combines tactile physics, responsive disk drops, expressive visual themes, audio-haptic feedback, and a smart AI engine.
+
+--------------------------------------------------
+✨ KEY FEATURES
+--------------------------------------------------
+• 5 GAME MODES: Quick Play, Solo vs AI, 2-Player Pass & Play, Online Multiplayer, and the thrilling Dice Mode!
+• 5 AI DIFFICULTIES: From Beginner to Master (with heuristic Minimax lookahead and strategic column blocking).
+• UNPREDICTABLE DICE MODE: Roll a die each turn to determine the exact column you must target!
+• MULTIPLE BOARD SIZES: Classic 7x6, Compact 6x5, Grand 8x7, and Mega Connect 5.
+• 40+ UNLOCKABLE ACHIEVEMENTS: Earn local XP, level up your profile, and track your match history.
+• FULL ACCESSIBILITY: Accessible column selectors, high contrast board visuals, and customizable vibration feedback.
+• 100% OFFLINE & ONLINE: Play anywhere offline or challenge players worldwide with room codes!
+
+--------------------------------------------------
+💡 HOW TO PLAY
+--------------------------------------------------
+1. Tap any available column to drop your chip into the lowest unoccupied slot.
+2. Form an unbroken line of 4 chips horizontally, vertically, or diagonally.
+3. Block your opponent's lines before they complete four-in-a-row!
+4. Outsmart your opponent with deep tactical positioning and claim victory!
+
+Download Connect Four today and test your spatial reasoning and strategic planning! 🎯✨

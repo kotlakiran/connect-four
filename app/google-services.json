@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "project_number": "756945363546",
+    "project_id": "connectfour-game-app",
+    "storage_bucket": "connectfour-game-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756945363546:android:ea60c418e059b1784c2e63",
+        "android_client_info": {
+          "package_name": "com.kirankotla.connectfour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756945363546-du0g0f63lq5am4b5frui4m02fg63ho2a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kirankotla.connectfour",
+            "certificate_hash": "280451540f66edfe55c87f576b4fd8cc877fbd9a"
+          }
+        },
+        {
+          "client_id": "756945363546-gvlmalsf6icu2nfot9shg9cvt3ebd5gh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kirankotla.connectfour",
+            "certificate_hash": "f4f44661e066a6c76abe2fe8a185d0c470905a5d"
+          }
+        },
+        {
+          "client_id": "756945363546-be8klnmqp5gamq3nlm0vthhftbic879m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj0ZvrzOmUsMC3v79wLrVCA8-Y6bXBKCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756945363546-be8klnmqp5gamq3nlm0vthhftbic879m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756945363546:android:ea60c418e059b1784c2e64",
+        "android_client_info": {
+          "package_name": "com.kirankotla.connectfour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756945363546-du0g0f63lq5am4b5frui4m02fg63ho2a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kirankotla.connectfour",
+            "certificate_hash": "280451540f66edfe55c87f576b4fd8cc877fbd9a"
+          }
+        },
+        {
+          "client_id": "756945363546-be8klnmqp5gamq3nlm0vthhftbic879m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj0ZvrzOmUsMC3v79wLrVCA8-Y6bXBKCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756945363546-be8klnmqp5gamq3nlm0vthhftbic879m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

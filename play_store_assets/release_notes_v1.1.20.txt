@@ -1,0 +1,6 @@
+<en-GB>
+Improved online multiplayer release stability:
+
+- Fixed Online Arena Firestore serialization in minified release builds.
+- Improved multiplayer startup and release-build reliability.
+</en-GB>

@@ -1,0 +1,9 @@
+<en-GB>
+Improved Dice Mode gameplay and stability:
+
+- Fixed a crash when tapping the board before rolling the dice.
+- Fixed multi-line Dice Mode turns so each allowed move works correctly.
+- Added a clear prompt, highlight, and sound when a dice roll is required.
+- Added a fast loading screen when starting a new battle.
+- Improved board touch handling across all game modes.
+</en-GB>

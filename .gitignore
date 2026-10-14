@@ -1,0 +1,26 @@
+# Gradle and Android build output
+.gradle/
+build/
+*/build/
+
+# Local machine configuration
+local.properties
+*.jks
+*.keystore
+keystore.properties
+
+# IDE metadata
+.idea/
+*.iml
+
+# Generated APK/AAB files
+*.apk
+*.aab
+*.apks
+
+# Native build output
+.externalNativeBuild/
+**/cxx/
+
+# OS metadata
+.DS_Store

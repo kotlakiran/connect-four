@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kirankotla.connectfour.ui.components.VectorAvatar
+import com.kirankotla.connectfour.ui.components.ConnectFourEmblem
 import com.kirankotla.connectfour.ui.components.MiniBoardDiagram
 import com.kirankotla.connectfour.ui.components.getAvatarById
 import com.kirankotla.connectfour.ui.theme.*
@@ -178,22 +179,11 @@ fun SplashScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.scale(pulseScale)
         ) {
-            // Reuse the playable board motif so splash and game surfaces share one identity.
-            Surface(
-                color = Color(0xFF101A36),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.size(68.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    MiniBoardDiagram(
-                        rows = 4,
-                        cols = 4,
-                        accentColor = CyberCyan,
-                        isHighlighted = true,
-                        modifier = Modifier.size(56.dp)
-                    )
-                }
-            }
+            // Authentic Connect Four Hero Emblem
+            ConnectFourEmblem(
+                size = 80.dp,
+                animated = true
+            )
 
             Text(
                 text = "CONNECT FOUR",

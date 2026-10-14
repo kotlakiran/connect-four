@@ -29,7 +29,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.EmojiEvents
 import coil.compose.AsyncImage
+import com.kirankotla.connectfour.ui.components.ConnectFourEmblem
 import com.kirankotla.connectfour.ui.components.MiniBoardDiagram
 import com.kirankotla.connectfour.ui.theme.*
 
@@ -271,23 +273,11 @@ private fun OnboardingGameplayGuideStep() {
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Mini Board Visual
-        Box(
-            modifier = Modifier
-                .size(76.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
-                .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), RoundedCornerShape(20.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            MiniBoardDiagram(
-                rows = 3,
-                cols = 3,
-                accentColor = MaterialTheme.colorScheme.primary,
-                isHighlighted = true,
-                modifier = Modifier.size(56.dp)
-            )
-        }
+        // Connect Four Board Emblem
+        ConnectFourEmblem(
+            size = 88.dp,
+            animated = true
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -380,9 +370,9 @@ private fun OnboardingReadyStep(playerName: String) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.SportsEsports,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
+                imageVector = Icons.Default.EmojiEvents,
+                contentDescription = "Championship Trophy",
+                modifier = Modifier.size(52.dp),
                 tint = Color.White
             )
         }

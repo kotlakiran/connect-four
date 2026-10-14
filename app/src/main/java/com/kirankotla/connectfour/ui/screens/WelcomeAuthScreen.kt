@@ -35,6 +35,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.kirankotla.connectfour.auth.AuthState
 import com.kirankotla.connectfour.auth.AuthViewModel
+import com.kirankotla.connectfour.ui.components.ConnectFourEmblem
 import com.kirankotla.connectfour.ui.theme.*
 
 @Composable
@@ -114,20 +115,10 @@ fun WelcomeAuthScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(76.dp)
-                            .clip(RoundedCornerShape(22.dp))
-                            .background(Brush.linearGradient(listOf(BrandIndigo, BrandTeal))),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.SportsEsports,
-                            contentDescription = "Connect Four Logo",
-                            tint = Color.White,
-                            modifier = Modifier.size(44.dp)
-                        )
-                    }
+                    ConnectFourEmblem(
+                        size = 92.dp,
+                        animated = true
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 

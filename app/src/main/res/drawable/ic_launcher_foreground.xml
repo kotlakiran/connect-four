@@ -4,17 +4,67 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Connect Four Grid Logo -->
+
+    <!-- Connect Four Vertical Chassis Frame -->
     <path
-        android:fillColor="#FF6B6B"
-        android:pathData="M30,30h20v20h-20z" />
+        android:fillColor="#1E3A8A"
+        android:pathData="M26,22h56c3.3,0 6,2.7 6,6v52c0,3.3 -2.7,6 -6,6h-56c-3.3,0 -6,-2.7 -6,-6v-52c0,-3.3 2.7,-6 6,-6z" />
+
+    <!-- Chassis Metallic Bevel Border -->
     <path
-        android:fillColor="#22B8A7"
-        android:pathData="M58,30h20v20h-20z" />
+        android:strokeColor="#3B82F6"
+        android:strokeWidth="1.5"
+        android:pathData="M26,22h56c3.3,0 6,2.7 6,6v52c0,3.3 -2.7,6 -6,6h-56c-3.3,0 -6,-2.7 -6,-6v-52c0,-3.3 2.7,-6 6,-6z" />
+
+    <!-- Empty Cavities (Dark Holes) -->
+    <!-- Row 0: y=31 -->
+    <path android:fillColor="#090D1A" android:pathData="M33,31m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#090D1A" android:pathData="M47,31m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#090D1A" android:pathData="M61,31m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <!-- Red Win Chip (r=0, c=3) -->
+    <path android:fillColor="#FF1744" android:pathData="M75,31m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#FF8A80" android:pathData="M73,29m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Row 1: y=45 -->
+    <path android:fillColor="#090D1A" android:pathData="M33,45m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#090D1A" android:pathData="M47,45m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <!-- Red Win Chip (r=1, c=2) -->
+    <path android:fillColor="#FF1744" android:pathData="M61,45m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#FF8A80" android:pathData="M59,43m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Cyan Chip (r=1, c=3) -->
+    <path android:fillColor="#00E5FF" android:pathData="M75,45m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#E0F7FA" android:pathData="M73,43m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Row 2: y=59 -->
+    <path android:fillColor="#090D1A" android:pathData="M33,59m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <!-- Red Win Chip (r=2, c=1) -->
+    <path android:fillColor="#FF1744" android:pathData="M47,59m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#FF8A80" android:pathData="M45,57m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Cyan Chip (r=2, c=2) -->
+    <path android:fillColor="#00E5FF" android:pathData="M61,59m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#E0F7FA" android:pathData="M59,57m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Cyan Chip (r=2, c=3) -->
+    <path android:fillColor="#00E5FF" android:pathData="M75,59m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#E0F7FA" android:pathData="M73,57m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Row 3: y=73 -->
+    <!-- Red Win Chip (r=3, c=0) -->
+    <path android:fillColor="#FF1744" android:pathData="M33,73m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#FF8A80" android:pathData="M31,71m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Cyan Chip (r=3, c=1) -->
+    <path android:fillColor="#00E5FF" android:pathData="M47,73m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#E0F7FA" android:pathData="M45,71m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Red Chip (r=3, c=2) -->
+    <path android:fillColor="#FF1744" android:pathData="M61,73m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#FF8A80" android:pathData="M59,71m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+    <!-- Cyan Chip (r=3, c=3) -->
+    <path android:fillColor="#00E5FF" android:pathData="M75,73m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0" />
+    <path android:fillColor="#E0F7FA" android:pathData="M73,71m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Winning 4-in-a-row Diagonal Glow Line -->
     <path
-        android:fillColor="#22B8A7"
-        android:pathData="M30,58h20v20h-20z" />
-    <path
-        android:fillColor="#FF6B6B"
-        android:pathData="M58,58h20v20h-20z" />
+        android:strokeColor="#FFD700"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M33,73 L75,31" />
 </vector>

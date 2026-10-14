@@ -2,6 +2,7 @@ package com.kirankotla.connectfour.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,38 +46,45 @@ enum class TutorialDemoScenario(
     val targetColumn: Int,
     val badgeColor: Color
 ) {
-    HORIZONTAL(
-        title = "Horizontal Strike",
-        icon = "↔️",
-        subtitle = "Connect 4 in a horizontal row",
+    FORK(
+        title = "The Fork (Double Threat)",
+        icon = "🔱",
+        subtitle = "Unstoppable double 4-in-a-row combination",
         targetColumn = 4,
         badgeColor = BrandCoral
     ),
-    VERTICAL(
-        title = "Vertical Tower",
-        icon = "↕️",
-        subtitle = "Stack 4 chips straight up",
+    SEVEN_TRAP(
+        title = "The 7-Trap Combination",
+        icon = "7️⃣",
+        subtitle = "Intersecting horizontal & diagonal threats",
         targetColumn = 3,
         badgeColor = BrandIndigo
     ),
-    DIAGONAL(
-        title = "Diagonal Climb",
+    MIDGAME_DIAGONAL(
+        title = "Crowded Board Diagonal",
         icon = "↗️",
-        subtitle = "Form a 4-chip diagonal slant",
+        subtitle = "Ascend diagonally through mid-game defense",
         targetColumn = 4,
         badgeColor = BrandAmber
     ),
-    DEFENSE(
-        title = "Defensive Block",
-        icon = "🛡️",
-        subtitle = "Block opponent's winning threat",
-        targetColumn = 4,
+    VERTICAL_STACK(
+        title = "Pillar Overpower (Vertical)",
+        icon = "↕️",
+        subtitle = "Column depth pressure in contested match",
+        targetColumn = 3,
         badgeColor = BrandTeal
+    ),
+    DEFENSIVE_BLOCK(
+        title = "Mid-Game Threat Block",
+        icon = "🛡️",
+        subtitle = "Spot & shutdown opponent's hidden win",
+        targetColumn = 2,
+        badgeColor = CyberCyan
     ),
     FREE_PLAY(
         title = "Free Practice",
         icon = "🎮",
-        subtitle = "Experiment freely on the grid",
+        subtitle = "Experiment freely with combinations",
         targetColumn = -1,
         badgeColor = BrandPurple
     )
@@ -93,11 +101,11 @@ fun TutorialScreen(
     val hapticManager = remember { HapticManager(context) }
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedScenario by remember { mutableStateOf(TutorialDemoScenario.HORIZONTAL) }
-    var currentGameState by remember { mutableStateOf(buildScenarioState(TutorialDemoScenario.HORIZONTAL)) }
+    var selectedScenario by remember { mutableStateOf(TutorialDemoScenario.FORK) }
+    var currentGameState by remember { mutableStateOf(buildScenarioState(TutorialDemoScenario.FORK)) }
     var isDemoPlaying by remember { mutableStateOf(false) }
     var scenarioCompleted by remember { mutableStateOf(false) }
-    var coachFeedback by remember { mutableStateOf(initialCoachMessage(TutorialDemoScenario.HORIZONTAL)) }
+    var coachFeedback by remember { mutableStateOf(initialCoachMessage(TutorialDemoScenario.FORK)) }
 
     fun resetScenario(scenario: TutorialDemoScenario) {
         selectedScenario = scenario
@@ -416,6 +424,80 @@ fun TutorialScreen(
                 }
             }
 
+            // ====================================================
+            // WINNING COMBINATIONS REFERENCE CARD (69 TOTAL WINS)
+            // ====================================================
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("combinations_overview_card"),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Surface(
+                            color = BrandIndigo.copy(alpha = 0.15f),
+                            shape = CircleShape,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text("📐", fontSize = 14.sp)
+                            }
+                        }
+                        Text(
+                            text = "Connect Four Math: 69 Total Winning Lines",
+                            fontWeight = FontWeight.Black,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
+                    Text(
+                        text = "Every match has 69 possible ways to connect 4 on a standard 6x7 board:",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        ComboStatPill(icon = "↔️", count = "24", label = "Horizontal")
+                        ComboStatPill(icon = "↕️", count = "21", label = "Vertical")
+                        ComboStatPill(icon = "↗️", count = "24", label = "Diagonals")
+                    }
+
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("💡", fontSize = 16.sp)
+                            Text(
+                                text = "Pro Strategy: Column 3 (Center) belongs to 24 winning lines — more than any other column! Real matches are decided by who controls the center.",
+                                fontSize = 11.sp,
+                                color = BrandAmber,
+                                lineHeight = 15.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+            }
+
             // Finish Academy Button
             Button(
                 onClick = {
@@ -447,49 +529,96 @@ fun TutorialScreen(
 internal fun buildScenarioState(scenario: TutorialDemoScenario): GameState {
     val initial = GameEngine.createInitialState(rows = 6, cols = 7, mode = GameMode.PASS_AND_PLAY)
     return when (scenario) {
-        TutorialDemoScenario.HORIZONTAL -> {
-            // Player 1 (Red) has 3 chips in bottom row (cols 1, 2, 3). Dropping into col 4 completes 4-in-a-row.
-            var s = GameEngine.applyMove(initial, "col_1").newState // P1 at (5,1)
-            s = GameEngine.applyMove(s, "col_0").newState // P2 at (5,0)
-            s = GameEngine.applyMove(s, "col_2").newState // P1 at (5,2)
-            s = GameEngine.applyMove(s, "col_6").newState // P2 at (5,6)
-            s = GameEngine.applyMove(s, "col_3").newState // P1 at (5,3)
-            s = GameEngine.applyMove(s, "col_0").newState // P2 at (4,0)
-            s // Next is P1's turn
+        TutorialDemoScenario.FORK -> {
+            // Real mid-game match (14 moves). Both players contested center and flanks.
+            // Red has established (5,1), (5,2), (5,3) and (5,5). Dropping into Column 4
+            // completes (5,1)-(5,4) through the crowded corridor!
+            var s = GameEngine.applyMove(initial, "col_3").newState // P1 (5,3)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (4,3)
+            s = GameEngine.applyMove(s, "col_2").newState // P1 (5,2)
+            s = GameEngine.applyMove(s, "col_2").newState // P2 (4,2)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (5,1)
+            s = GameEngine.applyMove(s, "col_0").newState // P2 (5,0)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (4,1)
+            s = GameEngine.applyMove(s, "col_0").newState // P2 (4,0)
+            s = GameEngine.applyMove(s, "col_2").newState // P1 (3,2)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (3,3)
+            s = GameEngine.applyMove(s, "col_5").newState // P1 (5,5)
+            s = GameEngine.applyMove(s, "col_6").newState // P2 (5,6)
+            s = GameEngine.applyMove(s, "col_5").newState // P1 (4,5)
+            s = GameEngine.applyMove(s, "col_6").newState // P2 (4,6)
+            s // Next is P1 (Red): Drop into Column 4 to strike!
         }
-        TutorialDemoScenario.VERTICAL -> {
-            // Player 1 has 3 stacked chips in col 3: rows 5, 4, 3. Dropping into col 3 lands at (2,3) to win!
-            var s = GameEngine.applyMove(initial, "col_3").newState // P1 at (5,3)
-            s = GameEngine.applyMove(s, "col_2").newState // P2 at (5,2)
-            s = GameEngine.applyMove(s, "col_3").newState // P1 at (4,3)
-            s = GameEngine.applyMove(s, "col_4").newState // P2 at (5,4)
-            s = GameEngine.applyMove(s, "col_3").newState // P1 at (3,3)
-            s = GameEngine.applyMove(s, "col_2").newState // P2 at (4,2)
-            s // Next is P1's turn
+        TutorialDemoScenario.SEVEN_TRAP -> {
+            // Real 12-move contest. Red built horizontal threats at (5,1), (5,2), (5,4)
+            // with surrounding action in cols 0, 5, 6. Dropping into center Col 3 drops the keystone chip!
+            var s = GameEngine.applyMove(initial, "col_1").newState // P1 (5,1)
+            s = GameEngine.applyMove(s, "col_0").newState // P2 (5,0)
+            s = GameEngine.applyMove(s, "col_2").newState // P1 (5,2)
+            s = GameEngine.applyMove(s, "col_0").newState // P2 (4,0)
+            s = GameEngine.applyMove(s, "col_4").newState // P1 (5,4)
+            s = GameEngine.applyMove(s, "col_5").newState // P2 (5,5)
+            s = GameEngine.applyMove(s, "col_2").newState // P1 (4,2)
+            s = GameEngine.applyMove(s, "col_6").newState // P2 (5,6)
+            s = GameEngine.applyMove(s, "col_4").newState // P1 (4,4)
+            s = GameEngine.applyMove(s, "col_6").newState // P2 (4,6)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (4,1)
+            s = GameEngine.applyMove(s, "col_5").newState // P2 (4,5)
+            s // Next is P1: Drop into Col 3 to win!
         }
-        TutorialDemoScenario.DIAGONAL -> {
-            // Diagonal: (5,1), (4,2), (3,3), and target (2,4)
-            var s = GameEngine.applyMove(initial, "col_1").newState // P1 at (5,1)
-            s = GameEngine.applyMove(s, "col_2").newState // P2 at (5,2)
-            s = GameEngine.applyMove(s, "col_2").newState // P1 at (4,2)
-            s = GameEngine.applyMove(s, "col_3").newState // P2 at (5,3)
-            s = GameEngine.applyMove(s, "col_4").newState // P1 at (5,4)
-            s = GameEngine.applyMove(s, "col_3").newState // P2 at (4,3)
-            s = GameEngine.applyMove(s, "col_3").newState // P1 at (3,3)
-            s = GameEngine.applyMove(s, "col_4").newState // P2 at (4,4)
-            s = GameEngine.applyMove(s, "col_0").newState // P1 at (5,0)
-            s = GameEngine.applyMove(s, "col_4").newState // P2 at (3,4)
-            s // Next is P1's turn to drop into col 4 at (2,4)!
+        TutorialDemoScenario.MIDGAME_DIAGONAL -> {
+            // Real 14-move crowded match with chips stacked across columns at varying heights.
+            // Red built diagonal steps at (5,1), (4,2), (3,3). Col 4 is filled up to row 3 (5,4),(4,4),(3,4).
+            // Dropping into Col 4 lands at (2,4) to connect the 4-chip ascending diagonal!
+            var s = GameEngine.applyMove(initial, "col_1").newState // P1 (5,1)
+            s = GameEngine.applyMove(s, "col_2").newState // P2 (5,2)
+            s = GameEngine.applyMove(s, "col_2").newState // P1 (4,2)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (5,3)
+            s = GameEngine.applyMove(s, "col_0").newState // P1 (5,0)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (4,3)
+            s = GameEngine.applyMove(s, "col_3").newState // P1 (3,3)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (5,4)
+            s = GameEngine.applyMove(s, "col_5").newState // P1 (5,5)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (4,4)
+            s = GameEngine.applyMove(s, "col_6").newState // P1 (5,6)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (3,4)
+            s = GameEngine.applyMove(s, "col_5").newState // P1 (4,5)
+            s = GameEngine.applyMove(s, "col_0").newState // P2 (4,0)
+            s // Next is P1: Drop into Col 4 to complete diagonal at (2,4)!
         }
-        TutorialDemoScenario.DEFENSE -> {
-            // Opponent (Player 2) has 3 chips in a row at (5,1), (5,2), (5,3). Player 1 must drop into col 4 to block!
-            var s = GameEngine.applyMove(initial, "col_0").newState // P1 at (5,0)
-            s = GameEngine.applyMove(s, "col_1").newState // P2 at (5,1)
-            s = GameEngine.applyMove(s, "col_6").newState // P1 at (5,6)
-            s = GameEngine.applyMove(s, "col_2").newState // P2 at (5,2)
-            s = GameEngine.applyMove(s, "col_0").newState // P1 at (4,0)
-            s = GameEngine.applyMove(s, "col_3").newState // P2 at (5,3)
-            s // Next is P1's turn: must block col 4!
+        TutorialDemoScenario.VERTICAL_STACK -> {
+            // Real 12-move contest. Red stacked Col 3 at (5,3), (4,3), (3,3)
+            // with active flanking play in cols 0, 1, 2, 4, 5. Dropping in Col 3 lands at (2,3) to win!
+            var s = GameEngine.applyMove(initial, "col_3").newState // P1 (5,3)
+            s = GameEngine.applyMove(s, "col_2").newState // P2 (5,2)
+            s = GameEngine.applyMove(s, "col_3").newState // P1 (4,3)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (5,4)
+            s = GameEngine.applyMove(s, "col_3").newState // P1 (3,3)
+            s = GameEngine.applyMove(s, "col_2").newState // P2 (4,2)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (5,1)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (4,4)
+            s = GameEngine.applyMove(s, "col_5").newState // P1 (5,5)
+            s = GameEngine.applyMove(s, "col_2").newState // P2 (3,2)
+            s = GameEngine.applyMove(s, "col_0").newState // P1 (5,0)
+            s = GameEngine.applyMove(s, "col_5").newState // P2 (4,5)
+            s // Next is P1: Drop into Col 3 for vertical win!
+        }
+        TutorialDemoScenario.DEFENSIVE_BLOCK -> {
+            // Real 12-move match. Cyan (Player 2) has established 3-in-a-row at (5,3), (5,4), (5,5).
+            // If Red doesn't drop into Col 2 at (5,2), Cyan wins on the very next turn!
+            var s = GameEngine.applyMove(initial, "col_0").newState // P1 (5,0)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (5,3)
+            s = GameEngine.applyMove(s, "col_6").newState // P1 (5,6)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (5,4)
+            s = GameEngine.applyMove(s, "col_0").newState // P1 (4,0)
+            s = GameEngine.applyMove(s, "col_5").newState // P2 (5,5)
+            s = GameEngine.applyMove(s, "col_6").newState // P1 (4,6)
+            s = GameEngine.applyMove(s, "col_3").newState // P2 (4,3)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (5,1)
+            s = GameEngine.applyMove(s, "col_4").newState // P2 (4,4)
+            s = GameEngine.applyMove(s, "col_1").newState // P1 (4,1)
+            s = GameEngine.applyMove(s, "col_5").newState // P2 (4,5)
+            s // Next is P1: MUST drop into Col 2 to block!
         }
         TutorialDemoScenario.FREE_PLAY -> {
             initial
@@ -498,30 +627,58 @@ internal fun buildScenarioState(scenario: TutorialDemoScenario): GameState {
 }
 
 private fun scenarioExplanation(scenario: TutorialDemoScenario): String = when (scenario) {
-    TutorialDemoScenario.HORIZONTAL ->
-        "1. Horizontal Alignment: Chips naturally line up across the columns. Red has 3 chips in columns 1, 2, and 3. Dropping into column 4 completes the 4-in-a-row to win the game!"
-    TutorialDemoScenario.VERTICAL ->
-        "2. Vertical Stacking: Every chip falls to the lowest available slot. When you stack 4 chips directly on top of each other in the same column, you score an instant vertical victory!"
-    TutorialDemoScenario.DIAGONAL ->
-        "3. Diagonal Mastery: Diagonal lines can ascend or descend. By stacking support chips underneath, you position your 4th chip at the exact height needed to connect the diagonal!"
-    TutorialDemoScenario.DEFENSE ->
-        "4. Tactical Defense: Watch your opponent's moves closely! Your opponent (Blue) has 3 chips aligned. If you don't drop into column 4 right now, they will win on their very next turn. Drop into column 4 to BLOCK them!"
+    TutorialDemoScenario.FORK ->
+        "1. The Fork (Double Threat): In real matches, elite players engineer a 'Fork' — creating multiple win threats at once so the opponent cannot block both. In this 14-chip match, Red has contested both sides and center. Dropping into Column 4 completes the 4-in-a-row through the bottom corridor!"
+    TutorialDemoScenario.SEVEN_TRAP ->
+        "2. The 7-Trap Combination: Real matches often feature intersecting lines that form a '7' shape. Here, Red laid groundwork across columns 1, 2, and 4 amidst active defense. Dropping into Column 3 places the central keystone piece, joining both flanks into an unstoppable 4-in-a-row!"
+    TutorialDemoScenario.MIDGAME_DIAGONAL ->
+        "3. Crowded Board Diagonal: Real matches are packed with 14+ chips. Diagonals are the stealthiest win combination because chips sit at different column heights. Red built stepping stones at (5,1), (4,2), and (3,3). Dropping into Column 4 stacks the final chip onto (2,4) to slice diagonally through the defense!"
+    TutorialDemoScenario.VERTICAL_STACK ->
+        "4. Pillar Overpower (Vertical Tower): When both players clash over center control, vertical towers punish an opponent who neglects column depth. Red has stacked 3 chips in Column 3 amidst heavy side skirmishes. Dropping into Column 3 lands on row 2 for an instant tower victory!"
+    TutorialDemoScenario.DEFENSIVE_BLOCK ->
+        "5. Mid-Game Threat Shutdown: In real matches, spotting your opponent's combinations before they strike is critical! Your opponent (Cyan) has 3 chips lined up at columns 3, 4, 5. If you don't drop into Column 2 right now, they win on their next move. Drop into Column 2 to shut them down!"
     TutorialDemoScenario.FREE_PLAY ->
-        "5. Free Practice: Experiment with drops, double-threat traps, and center control. When you're confident, jump into Solo vs AI, Campaign chapters, or Live Arena matches!"
+        "6. Free Match Sandbox: Practice setting up forks, building diagonals, and controlling the center column on an open board. Reset or undo anytime!"
 }
 
 private fun initialCoachMessage(scenario: TutorialDemoScenario): String = when (scenario) {
-    TutorialDemoScenario.HORIZONTAL -> "Tap Column 4 (or hit '▶ Auto Demo') to complete the 4-in-a-row win!"
-    TutorialDemoScenario.VERTICAL -> "Tap Column 3 to stack the 4th chip on top for a vertical win!"
-    TutorialDemoScenario.DIAGONAL -> "Tap Column 4 to climb into the diagonal strike!"
-    TutorialDemoScenario.DEFENSE -> "Danger! Opponent has 3 in a row. Tap Column 4 to block their victory!"
-    TutorialDemoScenario.FREE_PLAY -> "Tap any column to practice dropping chips and forming lines!"
+    TutorialDemoScenario.FORK -> "Realistic Mid-Game: Red has dual corridors open. Tap Column 4 (or hit '▶ Auto Demo') to strike!"
+    TutorialDemoScenario.SEVEN_TRAP -> "Center Pillar Key: Tap Column 3 to drop the keystone chip and complete the 4-in-a-row!"
+    TutorialDemoScenario.MIDGAME_DIAGONAL -> "Stealth Diagonal: Columns 1-3 have the steps. Tap Column 4 to climb into the diagonal win!"
+    TutorialDemoScenario.VERTICAL_STACK -> "Depth Attack: Column 3 is stacked 3 high. Tap Column 3 to drop the winning 4th chip!"
+    TutorialDemoScenario.DEFENSIVE_BLOCK -> "🚨 CRITICAL DEFENSE: Opponent has 3 in a row! Tap Column 2 to block their win!"
+    TutorialDemoScenario.FREE_PLAY -> "Sandbox Mode: Tap columns to drop chips and test custom tactical combinations!"
 }
 
 private fun completionCoachMessage(scenario: TutorialDemoScenario): String = when (scenario) {
-    TutorialDemoScenario.HORIZONTAL -> "BRILLIANT! 4 chips connected horizontally. Notice the celebratory line glow!"
-    TutorialDemoScenario.VERTICAL -> "TOWER SECURED! 4 chips stacked vertically. Pure gravity power!"
-    TutorialDemoScenario.DIAGONAL -> "DIAGONAL MASTER! Ascending line completed. Diagonals are the hardest to defend against!"
-    TutorialDemoScenario.DEFENSE -> "THREAT BLOCKED! 🛡️ You successfully shut down the opponent's winning chance!"
-    TutorialDemoScenario.FREE_PLAY -> "Well played! You've got the hang of Connect Four!"
+    TutorialDemoScenario.FORK -> "🏆 FORK EXECUTED! 4 chips connected across the bottom corridor. Cyan was helpless to stop it!"
+    TutorialDemoScenario.SEVEN_TRAP -> "🎯 7-TRAP COMPLETED! The center pillar connected both wings into a decisive 4-in-a-row victory!"
+    TutorialDemoScenario.MIDGAME_DIAGONAL -> "⚡ DIAGONAL MASTER! The chip landed at (2,4) through a crowded 15-chip board. Incredible tactical vision!"
+    TutorialDemoScenario.VERTICAL_STACK -> "💥 TOWER SECURED! Column 3 stacked 4 high. Gravity and column depth delivered the win!"
+    TutorialDemoScenario.DEFENSIVE_BLOCK -> "🛡️ THREAT SHUTDOWN! You blocked Column 2 just in time, neutralizing Cyan's winning streak!"
+    TutorialDemoScenario.FREE_PLAY -> "Great practice! You're ready to dominate live matches!"
 }
+
+@Composable
+private fun ComboStatPill(icon: String, count: String, label: String) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(icon, fontSize = 13.sp)
+                Text(count, fontWeight = FontWeight.Black, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
+            }
+            Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+

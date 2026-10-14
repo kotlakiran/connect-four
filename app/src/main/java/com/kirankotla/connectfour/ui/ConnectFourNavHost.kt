@@ -108,8 +108,12 @@ fun ConnectFourNavHost(
     LaunchedEffect(deepLinkCode) {
         val code = deepLinkCode?.trim()
         if (!code.isNullOrBlank()) {
-            navController.navigate(Screen.Lobby.createRoute(1))
-            multiplayerViewModel.joinPrivateGame(code)
+            if (code.equals("TUTORIAL", ignoreCase = true)) {
+                navController.navigate(Screen.Tutorial.route)
+            } else {
+                navController.navigate(Screen.Lobby.createRoute(1))
+                multiplayerViewModel.joinPrivateGame(code)
+            }
             onClearDeepLink()
         }
     }

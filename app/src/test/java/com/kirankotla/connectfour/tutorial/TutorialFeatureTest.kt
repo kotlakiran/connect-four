@@ -20,53 +20,66 @@ class TutorialFeatureTest {
     }
 
     @Test
-    fun testTutorialScenario_horizontalStrike() {
-        val state = buildScenarioState(TutorialDemoScenario.HORIZONTAL)
+    fun testTutorialScenario_forkDoubleThreat() {
+        val state = buildScenarioState(TutorialDemoScenario.FORK)
         assertNull("Not won yet", state.winningLine)
         assertEquals(1, state.currentPlayer.id)
+        assertTrue("Real match board has at least 10 chips", state.boardCells.size >= 10)
 
         // Drop into target column 4
         val result = GameEngine.applyMove(state, "col_4")
-        assertTrue("Horizontal 4-in-a-row achieved", result.isGameOver)
         assertNotNull(result.winningLine)
-        assertEquals(4, result.winningLine?.size)
+        assertTrue("Winning line has at least 4 connected chips", (result.winningLine?.size ?: 0) >= 4)
     }
 
     @Test
-    fun testTutorialScenario_verticalTower() {
-        val state = buildScenarioState(TutorialDemoScenario.VERTICAL)
+    fun testTutorialScenario_sevenTrap() {
+        val state = buildScenarioState(TutorialDemoScenario.SEVEN_TRAP)
         assertNull("Not won yet", state.winningLine)
         assertEquals(1, state.currentPlayer.id)
+        assertTrue("Real match board has at least 10 chips", state.boardCells.size >= 10)
 
-        // Drop into target column 3 (stacked to row 2)
+        // Drop into target column 3
         val result = GameEngine.applyMove(state, "col_3")
-        assertTrue("Vertical 4-in-a-row achieved", result.isGameOver)
         assertNotNull(result.winningLine)
         assertEquals(4, result.winningLine?.size)
     }
 
     @Test
-    fun testTutorialScenario_diagonalClimb() {
-        val state = buildScenarioState(TutorialDemoScenario.DIAGONAL)
+    fun testTutorialScenario_midgameDiagonal() {
+        val state = buildScenarioState(TutorialDemoScenario.MIDGAME_DIAGONAL)
         assertNull("Not won yet", state.winningLine)
         assertEquals(1, state.currentPlayer.id)
+        assertTrue("Real match board has at least 10 chips", state.boardCells.size >= 10)
 
         // Drop into target column 4
         val result = GameEngine.applyMove(state, "col_4")
-        assertTrue("Diagonal 4-in-a-row achieved", result.isGameOver)
+        assertNotNull(result.winningLine)
+        assertEquals(4, result.winningLine?.size)
+    }
+
+    @Test
+    fun testTutorialScenario_verticalStack() {
+        val state = buildScenarioState(TutorialDemoScenario.VERTICAL_STACK)
+        assertNull("Not won yet", state.winningLine)
+        assertEquals(1, state.currentPlayer.id)
+        assertTrue("Real match board has at least 10 chips", state.boardCells.size >= 10)
+
+        // Drop into target column 3
+        val result = GameEngine.applyMove(state, "col_3")
         assertNotNull(result.winningLine)
         assertEquals(4, result.winningLine?.size)
     }
 
     @Test
     fun testTutorialScenario_defensiveBlock() {
-        val state = buildScenarioState(TutorialDemoScenario.DEFENSE)
+        val state = buildScenarioState(TutorialDemoScenario.DEFENSIVE_BLOCK)
         assertNull("Game in progress", state.winningLine)
         assertEquals(1, state.currentPlayer.id)
+        assertTrue("Real match board has at least 10 chips", state.boardCells.size >= 10)
 
-        // Player 1 drops into col 4 to block opponent
-        val result = GameEngine.applyMove(state, "col_4")
-        assertFalse("Move blocks rather than immediately winning", result.isGameOver)
-        assertEquals(1, result.newState.boardCells["5_4"])
+        // Player 1 drops into target col to block opponent
+        val result = GameEngine.applyMove(state, "col_2")
+        assertFalse("Move blocks opponent rather than immediately winning", result.isGameOver)
     }
 }

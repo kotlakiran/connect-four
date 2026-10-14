@@ -1,6 +1,8 @@
 package com.kirankotla.connectfour.tutorial
 
 import com.kirankotla.connectfour.rules.GameEngine
+import com.kirankotla.connectfour.ui.screens.TutorialDemoScenario
+import com.kirankotla.connectfour.ui.screens.buildScenarioState
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -18,21 +20,53 @@ class TutorialFeatureTest {
     }
 
     @Test
-    fun testTutorialPracticeBoard_completionCondition() {
-        var practiceState = GameEngine.createInitialState(rows = 6, cols = 7)
-        assertNull("Tutorial is not completed initially", practiceState.winningLine)
+    fun testTutorialScenario_horizontalStrike() {
+        val state = buildScenarioState(TutorialDemoScenario.HORIZONTAL)
+        assertNull("Not won yet", state.winningLine)
+        assertEquals(1, state.currentPlayer.id)
 
-        // Drop chips to form 4-in-a-row
-        practiceState = GameEngine.applyMove(practiceState, "col_0").newState // P1 (r5, c0)
-        practiceState = GameEngine.applyMove(practiceState, "col_0").newState // P2 (r4, c0)
-        practiceState = GameEngine.applyMove(practiceState, "col_1").newState // P1 (r5, c1)
-        practiceState = GameEngine.applyMove(practiceState, "col_1").newState // P2 (r4, c1)
-        practiceState = GameEngine.applyMove(practiceState, "col_2").newState // P1 (r5, c2)
-        practiceState = GameEngine.applyMove(practiceState, "col_2").newState // P2 (r4, c2)
-        val result = GameEngine.applyMove(practiceState, "col_3") // P1 (r5, c3) -> 4 in a row!
-
-        assertTrue("Tutorial completion triggers when 4-in-a-row is achieved", result.isGameOver)
+        // Drop into target column 4
+        val result = GameEngine.applyMove(state, "col_4")
+        assertTrue("Horizontal 4-in-a-row achieved", result.isGameOver)
         assertNotNull(result.winningLine)
         assertEquals(4, result.winningLine?.size)
+    }
+
+    @Test
+    fun testTutorialScenario_verticalTower() {
+        val state = buildScenarioState(TutorialDemoScenario.VERTICAL)
+        assertNull("Not won yet", state.winningLine)
+        assertEquals(1, state.currentPlayer.id)
+
+        // Drop into target column 3 (stacked to row 2)
+        val result = GameEngine.applyMove(state, "col_3")
+        assertTrue("Vertical 4-in-a-row achieved", result.isGameOver)
+        assertNotNull(result.winningLine)
+        assertEquals(4, result.winningLine?.size)
+    }
+
+    @Test
+    fun testTutorialScenario_diagonalClimb() {
+        val state = buildScenarioState(TutorialDemoScenario.DIAGONAL)
+        assertNull("Not won yet", state.winningLine)
+        assertEquals(1, state.currentPlayer.id)
+
+        // Drop into target column 4
+        val result = GameEngine.applyMove(state, "col_4")
+        assertTrue("Diagonal 4-in-a-row achieved", result.isGameOver)
+        assertNotNull(result.winningLine)
+        assertEquals(4, result.winningLine?.size)
+    }
+
+    @Test
+    fun testTutorialScenario_defensiveBlock() {
+        val state = buildScenarioState(TutorialDemoScenario.DEFENSE)
+        assertNull("Game in progress", state.winningLine)
+        assertEquals(1, state.currentPlayer.id)
+
+        // Player 1 drops into col 4 to block opponent
+        val result = GameEngine.applyMove(state, "col_4")
+        assertFalse("Move blocks rather than immediately winning", result.isGameOver)
+        assertEquals(1, result.newState.boardCells["5_4"])
     }
 }

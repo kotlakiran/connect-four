@@ -69,8 +69,18 @@ fun InteractiveTutorialOverlay(
     }
     var step2Tapped by remember { mutableStateOf(false) }
 
-    // Step 3: Blocking decision
-    var step3SelectedBlock by remember { mutableStateOf(false) }
+    // Step 3: Blocking decision with playable board
+    var step3State by remember {
+        val initial = GameEngine.createInitialState(rows = 6, cols = 7)
+        var s = GameEngine.applyMove(initial, "col_0").newState // P1
+        s = GameEngine.applyMove(s, "col_1").newState // P2
+        s = GameEngine.applyMove(s, "col_6").newState // P1
+        s = GameEngine.applyMove(s, "col_2").newState // P2
+        s = GameEngine.applyMove(s, "col_0").newState // P1
+        s = GameEngine.applyMove(s, "col_3").newState // P2 (3 in a row in cols 1, 2, 3!)
+        mutableStateOf(s)
+    }
+    var step3Blocked by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -190,8 +200,18 @@ fun InteractiveTutorialOverlay(
                             }
                         )
                         3 -> TutorialStep4TacticalDefense(
-                            selectedBlock = step3SelectedBlock,
-                            onSelectBlock = { step3SelectedBlock = true }
+                            gameState = step3State,
+                            blocked = step3Blocked,
+                            onTapEdge = { edgeId ->
+                                if (!step3State.isEdgeClaimed(edgeId)) {
+                                    val col = edgeId.removePrefix("col_").toIntOrNull() ?: 0
+                                    val res = GameEngine.applyMove(step3State, edgeId)
+                                    step3State = res.newState
+                                    if (col == 4 || col == 0) {
+                                        step3Blocked = true
+                                    }
+                                }
+                            }
                         )
                         4 -> TutorialStep5ReadyToPlay()
                     }
@@ -449,8 +469,9 @@ private fun TutorialStep3Stacking(
 
 @Composable
 private fun TutorialStep4TacticalDefense(
-    selectedBlock: Boolean,
-    onSelectBlock: () -> Unit
+    gameState: GameState,
+    blocked: Boolean,
+    onTapEdge: (String) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -463,59 +484,53 @@ private fun TutorialStep4TacticalDefense(
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
-                    text = "Tactics: Defense & Blocking",
+                    text = "Tactics: Defense & Blocking Threats",
                     fontWeight = FontWeight.Bold,
                     color = BrandPurple,
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = "Always monitor your opponent's line! If they reach 3 in a row, block them before they drop the winning chip.",
+                    text = "Always monitor opponent chips! Opponent (Blue) has 3 in a row. Drop your chip into column 4 to BLOCK them!",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF0A0F1E)),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier.padding(14.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = "Opponent has 3 chips aligned with an open slot. What is the right move?",
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 13.sp
-                )
+            ConnectFourBoard(
+                gameState = gameState,
+                highContrast = false,
+                reduceMotion = false,
+                hintEdgeId = if (!blocked) "col_4" else null,
+                onEdgeTap = onTapEdge,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-                // Correct Block Option
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .clickable { onSelectBlock() }
-                        .border(
-                            width = if (selectedBlock) 2.dp else 1.dp,
-                            color = if (selectedBlock) Color(0xFF10B981) else MaterialTheme.colorScheme.outlineVariant,
-                            shape = RoundedCornerShape(10.dp)
-                        ),
-                    color = if (selectedBlock) Color(0xFF10B981).copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
-                ) {
-                    Row(
-                        modifier = Modifier.padding(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Text(if (selectedBlock) "🛡️" else "⚪", fontSize = 16.sp)
-                        Column {
-                            Text("Drop into that column to BLOCK their 4th chip!", fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                            Text("Stops their victory cold and keeps you in the game.", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-                }
+        Surface(
+            color = if (blocked) Color(0xFF10B981).copy(alpha = 0.15f) else BrandCoral.copy(alpha = 0.15f),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(if (blocked) "🛡️" else "⚠️", fontSize = 14.sp)
+                Text(
+                    text = if (blocked) "THREAT BLOCKED! You successfully defended against opponent's win!" else "Tap column 4 (⬇️) to drop your chip and block their win!",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (blocked) Color(0xFF10B981) else BrandCoral
+                )
             }
         }
     }

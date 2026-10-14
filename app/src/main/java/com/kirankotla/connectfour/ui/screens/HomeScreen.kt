@@ -827,14 +827,14 @@ fun HomeScreen(
 
             WorldClassActionCard(
                 title = "Learn How To Play",
-                subtitle = "Master the 4th-wall trap & double-cross sacrifice tactics",
-                badgeText = "STRATEGY GUIDE 💡",
+                subtitle = "Interactive demos, auto-demo moves & tactical defense lessons",
+                badgeText = "TACTICAL GUIDE 💡",
                 icon = Icons.Default.Lightbulb,
                 badgeColor = BrandTeal,
                 tag = "tutorial_banner_card",
                 onClick = {
                     soundManager.playUiTap()
-                    showInteractiveTutorial = true
+                    onOpenTutorial()
                 }
             )
 
